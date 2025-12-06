@@ -1,0 +1,13 @@
+<h1>Add Movie</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    <input type="text" name="title" placeholder="Movie Title" required><br><br>
+    <input type="text" name="genre" placeholder="Genre" required><br><br>
+    <input type="number" step="0.1" name="rating" placeholder="Rating" required><br><br>
+    <input type="text" name="poster" placeholder="Poster URL (optional)"><br><br>
+
+    <button type="submit">Add Movie</button>
+</form>
+
+<a href="/">Back</a>
