@@ -23,6 +23,10 @@
             max-width: 700px;
             margin: auto;
         }
+        .movie-link {
+            text-decoration: none;
+            color: inherit;
+        }
     </style>
 </head>
 <body>
@@ -32,7 +36,8 @@
         <div class="container">
             <a class="navbar-brand" href="/">🎬 Movie Recommendation</a>
 
-            <a href="/add/" class="btn btn-success">+ Add Movie</a>
+            <a href="{% url 'movie_app:add_movie' %}" class="btn btn-success">+ Add Movie</a>
+
         </div>
     </nav>
 
@@ -62,9 +67,6 @@
             </div>
         </form>
 
-
-
-
         <!-- Movie List -->
         <h3 class="mb-3">Movie List</h3>
         <div class="row">
@@ -73,17 +75,23 @@
             <div class="col-md-3 mb-4">
                 <div class="card movie-card">
 
-                    {% if m.poster_url %}
-                        <img src="{{ m.poster_url }}" class="card-img-top" alt="{{ m.title }}">
-                    {% else %}
-                        <img src="https://via.placeholder.com/300x400?text=No+Image" class="card-img-top">
-                    {% endif %}
+                    <!-- ⭐ CLICKABLE DETAIL PAGE LINK (ONLY CHANGE) -->
+                    <a href="{% url 'movie_app:movie_detail' m.id %}" class="movie-link">
 
-                    <div class="card-body">
-                        <h5 class="card-title">{{ m.title }}</h5>
-                        <p class="text-muted">{{ m.genre }}</p>
-                        <p class="small">{{ m.description|default:"No description available" | truncatechars:80 }}</p>
-                    </div>
+                        {% if m.poster_url %}
+                            <img src="{{ m.poster_url }}" class="card-img-top" alt="{{ m.title }}">
+                        {% else %}
+                            <img src="https://via.placeholder.com/300x400?text=No+Image" class="card-img-top">
+                        {% endif %}
+
+                        <div class="card-body">
+                            <h5 class="card-title">{{ m.title }}</h5>
+                            <p class="text-muted">{{ m.genre }}</p>
+                            <p class="small">{{ m.description|default:"No description available" | truncatechars:80 }}</p>
+                        </div>
+
+                    </a>
+                    <!-- END LINK -->
 
                     <div class="card-footer text-center">
                         ⭐ Rating: {{ m.rating }}
@@ -101,7 +109,6 @@
         </div>
 
     </div>
-
 
     <!-- BOOTSTRAP JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

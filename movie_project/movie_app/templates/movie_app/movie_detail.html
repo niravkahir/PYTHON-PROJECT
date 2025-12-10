@@ -1,0 +1,55 @@
+{% extends "movie_app/base.html" %}
+
+{% block content %}
+<div style="display:flex; gap:20px; align-items:flex-start;">
+  <div style="flex:0 0 300px;">
+    <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" style="width:100%; max-width:300px; border-radius:6px;">
+  </div>
+
+  <div style="flex:1;">
+    <h1>{{ movie.title }}</h1>
+    <p><strong>Rating:</strong> {{ movie.rating|default:"N/A" }}</p>
+
+    <p><strong>Creators:</strong>
+      {% if movie.creators.exists %}
+        {% for p in movie.creators.all %}
+          {{ p.name }}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+      {% else %}
+        N/A
+      {% endif %}
+    </p>
+
+    <p><strong>Stars:</strong>
+      {% if movie.stars.exists %}
+        {% for p in movie.stars.all %}
+          {{ p.name }}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+      {% else %}
+        N/A
+      {% endif %}
+    </p>
+
+    <div>
+      <h3>About</h3>
+      <p>{{ movie.description|linebreaksbr }}</p>
+    </div>
+
+    <div style="margin-top:12px;">
+      {% if user.is_authenticated %}
+        <form method="post" action="{% url 'movie_app:watchlist_toggle' movie.pk %}">
+          {% csrf_token %}
+          {% if is_in_watchlist %}
+            <button type="submit">Remove from Watchlist</button>
+          {% else %}
+            <button type="submit">Add to Watchlist</button>
+          {% endif %}
+        </form>
+      {% else %}
+<a href="{% url 'login' %}?next={% url 'movie_app:movie_detail' movie.pk %}">
+    Log in to add to Watchlist
+</a>      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
