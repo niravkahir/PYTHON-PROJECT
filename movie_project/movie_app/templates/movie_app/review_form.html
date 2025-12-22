@@ -1,0 +1,64 @@
+{% extends "movie_app/base.html" %}
+
+{% block title %}Write Review{% endblock %}
+
+{% block content %}
+
+<h2>
+    {% if existing_review %}
+        Edit Review
+    {% else %}
+        Write Review
+    {% endif %}
+</h2>
+
+<hr>
+
+<div class="row">
+    <div class="col-md-4">
+        {% if movie.poster_url %}
+            <img src="{{ movie.poster_url }}" class="img-fluid" alt="{{ movie.title }}">
+        {% else %}
+            <img src="https://via.placeholder.com/200x300?text=No+Poster" class="img-fluid">
+        {% endif %}
+    </div>
+
+    <div class="col-md-8">
+        <h4>{{ movie.title }}</h4>
+        <p><strong>Genre:</strong> {{ movie.genre }}</p>
+        <p>{{ movie.description|truncatechars:200 }}</p>
+        <p><strong>Current Rating:</strong> {{ movie.rating|default:"Not rated" }}</p>
+    </div>
+</div>
+
+<hr>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label><strong>Your Rating:</strong></label><br>
+        {% for i in "12345"|make_list %}
+            <input type="radio" name="rating" value="{{ i }}"
+                {% if existing_review.rating == i %}checked{% endif %}>
+            {{ i }} Star
+        {% endfor %}
+    </div>
+
+    <div class="mb-3">
+        <label><strong>Your Review:</strong></label>
+        <textarea name="text" class="form-control" rows="5" required>
+{% if existing_review %}{{ existing_review.text }}{% endif %}
+        </textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        {% if existing_review %}Update Review{% else %}Submit Review{% endif %}
+    </button>
+
+    <a href="{% url 'movie_app:movie_detail' movie.id %}" class="btn btn-secondary">
+        Cancel
+    </a>
+</form>
+
+{% endblock %}

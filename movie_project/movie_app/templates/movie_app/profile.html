@@ -1,0 +1,41 @@
+{% extends "movie_app/base.html" %}
+{% block content %}
+
+<h3>User Profile</h3>
+
+<hr>
+
+<h5>Basic Information</h5>
+<p><b>Username:</b> {{ profile_user.username }}</p>
+<p><b>Email:</b> {{ profile_user.email|default:"Not provided" }}</p>
+<p><b>Joined On:</b> {{ profile_user.date_joined }}</p>
+
+<hr>
+
+<h5>User Activity</h5>
+<ul>
+    <li>Total Reviews: {{ reviews|length }}</li>
+    <li>Movies in Watchlist: {{ watchlist_count }}</li>
+</ul>
+
+<hr>
+
+<h5>Account Type</h5>
+{% if profile_user.is_staff %}
+    <p><span class="badge bg-warning">Admin User</span></p>
+{% else %}
+    <p><span class="badge bg-primary">Normal User</span></p>
+{% endif %}
+
+<hr>
+
+<h5>Quick Actions</h5>
+<a href="{% url 'movie_app:watchlist' %}" class="btn btn-secondary btn-sm">
+    View Watchlist
+</a>
+
+<a href="{% url 'movie_app:logout' %}" class="btn btn-danger btn-sm">
+    Logout
+</a>
+
+{% endblock %}

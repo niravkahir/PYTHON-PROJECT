@@ -1,0 +1,38 @@
+{% extends "movie_app/base.html" %}
+
+{% block title %}Creator Request{% endblock %}
+
+{% block content %}
+
+<h3>Content Creator Request</h3>
+<hr>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label>Your Name</label>
+        <input type="text" name="name" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label>Email</label>
+        <input type="email" name="email" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label>Movie Title</label>
+        <input type="text" name="movie_title" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label>Details</label>
+        <textarea name="message" class="form-control" rows="4" required></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        Submit
+    </button>
+</form>
+
+{% endblock %}

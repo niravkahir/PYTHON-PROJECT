@@ -1,0 +1,64 @@
+{% extends "movie_app/base.html" %}
+
+{% block title %}Request Content{% endblock %}
+
+{% block content %}
+
+<h3>Request Movie / Series Content</h3>
+<hr>
+
+<p>
+This page is for verified industry professionals to request
+adding or updating movie/series information.
+</p>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label>Title</label>
+        <input type="text" name="title" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label>Genre</label>
+        <input type="text" name="genre" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label>Request Type</label>
+        <select name="request_type" class="form-control">
+            <option value="new">Add New Content</option>
+            <option value="update">Update Existing Content</option>
+            <option value="correction">Correction</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Description / Synopsis</label>
+        <textarea name="description" class="form-control" rows="4" required></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label>Your Role</label>
+        <select name="your_role" class="form-control">
+            <option value="director">Director</option>
+            <option value="producer">Producer</option>
+            <option value="actor">Actor / Actress</option>
+            <option value="writer">Writer</option>
+            <option value="crew">Crew Member</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        Submit Request
+    </button>
+</form>
+
+<hr>
+
+<p>
+<small>Requests are reviewed within 24–48 hours.</small>
+</p>
+
+{% endblock %}

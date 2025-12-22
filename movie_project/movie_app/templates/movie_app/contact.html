@@ -1,0 +1,49 @@
+{% extends "movie_app/base.html" %}
+
+{% block title %}Contact Admin{% endblock %}
+
+{% block content %}
+
+<h3>Contact Admin / Creator</h3>
+<hr>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label>Subject</label>
+        <input type="text" name="subject" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label>Category</label>
+        <select name="category" class="form-control" required>
+            <option value="">Select</option>
+            <option value="feedback">Feedback / Suggestion</option>
+            <option value="bug">Bug Report</option>
+            <option value="feature">Feature Request</option>
+            <option value="partnership">Partnership</option>
+            <option value="other">Other</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Message</label>
+        <textarea name="message" class="form-control" rows="5" required></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        Send Message
+    </button>
+</form>
+
+<hr>
+
+<h5>Contact Information</h5>
+<p>
+    <strong>Email:</strong> contact@recommendox.com <br>
+    <strong>Response Time:</strong> 24–48 hours <br>
+    <strong>Privacy:</strong> Your data is secure
+</p>
+
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "movie_app/base.html" %}
+{% block content %}
+
+<h3>User Dashboard</h3>
+
+<div class="row">
+{% for movie in movies %}
+    <div class="col-md-3 mb-3">
+        <div class="card">
+            <img src="{{ movie.poster_url }}" class="card-img-top">
+            <div class="card-body">
+                <h6>{{ movie.title }}</h6>
+                <a href="{% url 'movie_app:movie_detail' movie.id %}"
+                   class="btn btn-sm btn-primary">View</a>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+</div>
+
+{% endblock %}

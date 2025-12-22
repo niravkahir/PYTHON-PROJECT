@@ -1,0 +1,72 @@
+{% extends "movie_app/base.html" %}
+
+{% block title %}Contact Admin{% endblock %}
+
+{% block content %}
+
+<h3>Contact Admin / Creator</h3>
+<hr>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label>Subject</label>
+        <input type="text" name="subject" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label>Category</label>
+        <select name="category" class="form-control" required>
+            <option value="">Select</option>
+            <option value="feedback">Feedback</option>
+            <option value="bug">Bug Report</option>
+            <option value="feature">Feature Request</option>
+            <option value="partnership">Partnership</option>
+            <option value="other">Other</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Message</label>
+        <textarea name="message" class="form-control" rows="5" required></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label>Priority</label>
+        <select name="priority" class="form-control">
+            <option value="low">Low</option>
+            <option value="normal" selected>Normal</option>
+            <option value="high">High</option>
+            <option value="urgent">Urgent</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        Send Message
+    </button>
+</form>
+
+<hr>
+
+<h5>Contact Information</h5>
+<p>
+    <strong>Email:</strong> contact@movierec.com <br>
+    <strong>Response Time:</strong> 24–48 hours
+</p>
+
+{% if recent_messages %}
+<hr>
+<h5>Your Recent Messages</h5>
+<ul>
+    {% for msg in recent_messages %}
+        <li>
+            {{ msg.subject|truncatechars:40 }} –
+            {{ msg.get_priority_display }} –
+            {{ msg.created_at|date:"M d" }}
+        </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% endblock %}

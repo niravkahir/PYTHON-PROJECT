@@ -1,0 +1,53 @@
+{% extends "movie_app/base.html" %}
+{% block content %}
+
+<h3>My Watchlist</h3>
+
+<p>Total Movies Saved: <b>{{ movies|length }}</b></p>
+
+<hr>
+
+{% if movies %}
+<table class="table table-bordered">
+    <tr>
+        <th>Poster</th>
+        <th>Title</th>
+        <th>Genre</th>
+        <th>Rating</th>
+        <th>Action</th>
+    </tr>
+
+    {% for movie in movies %}
+    <tr>
+        <td width="100">
+            {% if movie.poster_url %}
+                <img src="{{ movie.poster_url }}" width="80">
+            {% else %}
+                No Image
+            {% endif %}
+        </td>
+        <td>{{ movie.title }}</td>
+        <td>{{ movie.genre }}</td>
+        <td>{{ movie.rating|default:"N/A" }}</td>
+        <td>
+            <a href="{% url 'movie_app:movie_detail' movie.id %}" class="btn btn-sm btn-primary">
+                View
+            </a>
+            <form method="post" action="{% url 'movie_app:watchlist_toggle' movie.id %}" style="display:inline;">
+                {% csrf_token %}
+                <button class="btn btn-sm btn-danger">Remove</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% else %}
+<p>No movies in watchlist.</p>
+{% endif %}
+
+<a href="{% url 'movie_app:user_home' %}" class="btn btn-secondary mt-3">
+    Back to Movies
+</a>
+
+{% endblock %}
