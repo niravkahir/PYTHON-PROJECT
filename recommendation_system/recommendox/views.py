@@ -60,6 +60,7 @@ def content_creator_required(view_func):
 def get_personalized_recommendations(user):
     """Generate personalized recommendations based on user activity"""
     recommendations = []
+    seen_ids = set()  # Track content IDs to avoid duplicates
     
     # Get user's favorite genres from ratings
     user_ratings = Rating.objects.filter(user=user)
@@ -84,15 +85,21 @@ def get_personalized_recommendations(user):
                     id__in=user_ratings.values_list('content_id', flat=True)
                 ).order_by('-ratings__rating_value')[:3]
                 
-                recommendations.extend(list(genre_content))
+                for content in genre_content:
+                    if content.id not in seen_ids:  # Check for duplicates
+                        recommendations.append(content)
+                        seen_ids.add(content.id)
     
     # If not enough recommendations, add popular content
     if len(recommendations) < 6:
         additional = Content.objects.exclude(
-            id__in=[c.id for c in recommendations]
+            id__in=seen_ids  # Exclude already added
         ).order_by('-ratings__rating_value')[:6-len(recommendations)]
         
-        recommendations.extend(list(additional))
+        for content in additional:
+            if content.id not in seen_ids:
+                recommendations.append(content)
+                seen_ids.add(content.id)
     
     return recommendations[:6]  # Return max 6 recommendations
 
@@ -342,14 +349,20 @@ def add_review(request, content_id):
                 user=request.user,
                 content=content,
                 comment=comment,
-                is_approved=user_is_reviewer,  # Auto-approve for reviewers
-                is_verified=user_is_reviewer   # Mark as verified for reviewers
+                is_approved=user_is_reviewer,
+                is_verified=user_is_reviewer
             )
             
+            # Count user's reviews for this content
+            review_count = Review.objects.filter(
+                user=request.user, 
+                content=content
+            ).count()
+            
             if user_is_reviewer:
-                messages.success(request, 'Your review has been posted!')
+                messages.success(request, f'Your review has been posted! (Review #{review_count})')
             else:
-                messages.success(request, 'Your review has been submitted for moderation.')
+                messages.success(request, f'Your review has been submitted for moderation. (Review #{review_count})')
     
     return redirect('recommendox:content_detail', content_id=content_id)
 

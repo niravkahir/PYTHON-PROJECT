@@ -55,14 +55,22 @@
                                id="id_username" required autofocus>
                     </div>
 
-                    <!-- Password -->
+                    <!-- Password with Eye Toggle -->
                     <div class="mb-4">
                         <label for="id_password" class="form-label">
                             <i class="fas fa-lock"></i> Password
                         </label>
-                        <input type="password" name="password"
-                               class="form-control form-control-lg"
-                               id="id_password" required>
+                        <div class="input-group">
+                            <input type="password" name="password"
+                                   class="form-control form-control-lg"
+                                   id="id_password" required>
+                            <button class="btn btn-outline-secondary" 
+                                    type="button" 
+                                    id="togglePassword"
+                                    style="border-color: #ced4da;">
+                                <i class="fas fa-eye" id="toggleIcon"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <input type="hidden" name="next" value="{{ next }}">
@@ -97,5 +105,31 @@
         </div>
     </div>
 </div>
+
+<!-- JavaScript for Password Toggle -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordField = document.getElementById('id_password');
+    const toggleIcon = document.getElementById('toggleIcon');
+    
+    if (togglePassword && passwordField) {
+        togglePassword.addEventListener('click', function() {
+            // Toggle the type attribute
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            
+            // Toggle the eye icon
+            if (type === 'text') {
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        });
+    }
+});
+</script>
 
 {% endblock %}

@@ -203,7 +203,7 @@ class Review(models.Model):
     
     class Meta:
         ordering = ['-review_date']
-        unique_together = ['user', 'content']  # One review per user per content
+        # unique_together = ['user', 'content']  # One review per user per content
     
     def __str__(self):
         return f"Review by {self.user.username} on {self.content.title}"

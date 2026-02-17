@@ -59,25 +59,43 @@
                                value="{{ form.email.value|default:'' }}">
                     </div>
                     
-                    <!-- Password -->
+                    <!-- Password with Eye Toggle -->
                     <div class="mb-3">
                         <label for="id_password1" class="form-label">
                             <i class="fas fa-lock"></i> Password
                         </label>
-                        <input type="password" name="password1" class="form-control" 
-                               id="id_password1" required>
+                        <div class="input-group">
+                            <input type="password" name="password1" class="form-control" 
+                                   id="id_password1" required>
+                            <button class="btn btn-outline-secondary" 
+                                    type="button" 
+                                    id="togglePassword1"
+                                    style="border-color: #ced4da;">
+                                <i class="fas fa-eye" id="toggleIcon1"></i>
+                            </button>
+                        </div>
                         <div class="form-text">
                             Password must be at least 8 characters.
                         </div>
+                        <div id="passwordStrength" class="mt-1"></div>
                     </div>
                     
-                    <!-- Confirm Password -->
+                    <!-- Confirm Password with Eye Toggle -->
                     <div class="mb-4">
                         <label for="id_password2" class="form-label">
                             <i class="fas fa-lock"></i> Confirm Password
                         </label>
-                        <input type="password" name="password2" class="form-control" 
-                               id="id_password2" required>
+                        <div class="input-group">
+                            <input type="password" name="password2" class="form-control" 
+                                   id="id_password2" required>
+                            <button class="btn btn-outline-secondary" 
+                                    type="button" 
+                                    id="togglePassword2"
+                                    style="border-color: #ced4da;">
+                                <i class="fas fa-eye" id="toggleIcon2"></i>
+                            </button>
+                        </div>
+                        <div id="passwordMatch" class="mt-1"></div>
                     </div>
                     
                     <div class="d-grid gap-2">
@@ -115,6 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const password1 = document.getElementById('id_password1');
     const password2 = document.getElementById('id_password2');
     
+    // Password strength checker
     function checkPasswordStrength() {
         const password = password1.value;
         let indicator = document.getElementById('passwordStrength');
@@ -123,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
             indicator = document.createElement('div');
             indicator.id = 'passwordStrength';
             indicator.className = 'mt-2';
-            password1.parentNode.appendChild(indicator);
+            password1.parentNode.parentNode.appendChild(indicator);
         }
 
         if (password.length === 0) {
@@ -132,12 +151,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (password.length < 8) {
-            indicator.innerHTML = '<small class="text-danger">Too short</small>';
+            indicator.innerHTML = '<small class="text-danger"><i class="fas fa-times-circle"></i> Too short (min 8 characters)</small>';
         } else {
-            indicator.innerHTML = '<small class="text-success">Valid password</small>';
+            indicator.innerHTML = '<small class="text-success"><i class="fas fa-check-circle"></i> Valid password</small>';
         }
     }
     
+    // Password match checker
     function checkPasswordMatch() {
         let indicator = document.getElementById('passwordMatch');
 
@@ -145,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
             indicator = document.createElement('div');
             indicator.id = 'passwordMatch';
             indicator.className = 'mt-2';
-            password2.parentNode.appendChild(indicator);
+            password2.parentNode.parentNode.appendChild(indicator);
         }
 
         if (password2.value === '') {
@@ -154,11 +174,45 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (password1.value === password2.value) {
-            indicator.innerHTML = '<small class="text-success">Passwords match</small>';
+            indicator.innerHTML = '<small class="text-success"><i class="fas fa-check-circle"></i> Passwords match</small>';
         } else {
-            indicator.innerHTML = '<small class="text-danger">Passwords do not match</small>';
+            indicator.innerHTML = '<small class="text-danger"><i class="fas fa-times-circle"></i> Passwords do not match</small>';
         }
     }
+
+    // Password toggle for first field
+    const togglePassword1 = document.getElementById('togglePassword1');
+    const toggleIcon1 = document.getElementById('toggleIcon1');
+    
+    togglePassword1.addEventListener('click', function() {
+        const type = password1.getAttribute('type') === 'password' ? 'text' : 'password';
+        password1.setAttribute('type', type);
+        
+        if (type === 'text') {
+            toggleIcon1.classList.remove('fa-eye');
+            toggleIcon1.classList.add('fa-eye-slash');
+        } else {
+            toggleIcon1.classList.remove('fa-eye-slash');
+            toggleIcon1.classList.add('fa-eye');
+        }
+    });
+
+    // Password toggle for second field
+    const togglePassword2 = document.getElementById('togglePassword2');
+    const toggleIcon2 = document.getElementById('toggleIcon2');
+    
+    togglePassword2.addEventListener('click', function() {
+        const type = password2.getAttribute('type') === 'password' ? 'text' : 'password';
+        password2.setAttribute('type', type);
+        
+        if (type === 'text') {
+            toggleIcon2.classList.remove('fa-eye');
+            toggleIcon2.classList.add('fa-eye-slash');
+        } else {
+            toggleIcon2.classList.remove('fa-eye-slash');
+            toggleIcon2.classList.add('fa-eye');
+        }
+    });
 
     password1.addEventListener('input', checkPasswordStrength);
     password1.addEventListener('input', checkPasswordMatch);
