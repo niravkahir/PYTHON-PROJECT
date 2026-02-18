@@ -27,7 +27,7 @@ class Content(models.Model):
         ('Other', 'Other'),
     ]
     
-    CONTENT_TYPES = [  # FIXED: Changed from CONTENT_TYPE to CONTENT_TYPES
+    CONTENT_TYPES = [  
         ('Movie', 'Movie'),
         ('Web Series', 'Web Series'),
         ('TV Show', 'TV Show'),
@@ -69,7 +69,7 @@ class Content(models.Model):
             'description': self.description[:100] + '...' if len(self.description) > 100 else self.description
         }
     
-    def get_duration_display(self):  # ADD THIS HELPER METHOD
+    def get_duration_display(self):  
         """Return formatted duration with appropriate icon"""
         if not self.duration:
             return "N/A"
@@ -90,7 +90,7 @@ class Season(models.Model):
     description = models.TextField(blank=True, null=True)
     
     class Meta:
-        unique_together = ['content', 'season_number']  # ADD THIS
+        unique_together = ['content', 'season_number'] 
     
     def __str__(self):
         return f"{self.content.title} - Season {self.season_number}"
@@ -185,12 +185,11 @@ class Rating(models.Model):
     
     class Meta:
         unique_together = ['user', 'content']
-        ordering = ['-rating_date']  # ADD THIS
+        ordering = ['-rating_date']  
     
     def __str__(self):
         return f"{self.user.username} rated {self.content.title}: {self.rating_value}/5"
 
-# recommendox/models.py - Add this after Rating and before Reviewer
 
 class Review(models.Model):
     """User reviews for content"""
@@ -199,11 +198,11 @@ class Review(models.Model):
     comment = models.TextField()
     review_date = models.DateTimeField(auto_now_add=True)
     is_approved = models.BooleanField(default=False)
-    is_verified = models.BooleanField(default=False)  # For reviewers
+    is_verified = models.BooleanField(default=False) 
     
     class Meta:
         ordering = ['-review_date']
-        unique_together = ['user', 'content']  # One review per user per content
+        # unique_together = ['user', 'content']  # One review per user per content
     
     def __str__(self):
         return f"Review by {self.user.username} on {self.content.title}"
@@ -240,10 +239,6 @@ class Analytics(models.Model):
         self.total_views += 1
         self.save()
 
-# recommendox/models.py - Add these models
-
-
-# recommendox/models.py - Add this simple model
 
 class ContentOTT(models.Model):
     """Simple OTT availability for content"""
@@ -285,8 +280,6 @@ class Message(models.Model):
     def mark_as_read(self):  # ADD THIS
         self.is_read = True
         self.save()
-
-# recommendox/models.py - Add this after Reviewer model
 
 class ContentCreator(models.Model):
     """Content Creator - can add/edit/delete content like admin"""

@@ -5,10 +5,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    # Your entire website including admin pages
     path('', include('recommendox.urls')),
-    
-    # Django's built-in admin at different URL to avoid conflict
     path('admin/', admin.site.urls),
 ]
 

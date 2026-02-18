@@ -14,7 +14,6 @@
     <div class="col-md-6">
         <div class="card shadow">
 
-            <!-- Header -->
             <div class="card-header text-white text-center" style="background: #2c5d7c;">
                 <h3 class="mb-0">
                     <i class="fas fa-sign-in-alt"></i> Login
@@ -45,7 +44,6 @@
                 <form method="post" action="{% url 'recommendox:login' %}">
                     {% csrf_token %}
 
-                    <!-- Username -->
                     <div class="mb-3">
                         <label for="id_username" class="form-label">
                             <i class="fas fa-user"></i> Username
@@ -55,19 +53,25 @@
                                id="id_username" required autofocus>
                     </div>
 
-                    <!-- Password -->
                     <div class="mb-4">
                         <label for="id_password" class="form-label">
                             <i class="fas fa-lock"></i> Password
                         </label>
-                        <input type="password" name="password"
-                               class="form-control form-control-lg"
-                               id="id_password" required>
+                        <div class="input-group">
+                            <input type="password" name="password"
+                                   class="form-control form-control-lg"
+                                   id="id_password" required>
+                            <button class="btn btn-outline-secondary" 
+                                    type="button" 
+                                    id="togglePassword"
+                                    style="border-color: #ced4da;">
+                                <i class="fas fa-eye" id="toggleIcon"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <input type="hidden" name="next" value="{{ next }}">
 
-                    <!-- Button -->
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary btn-lg"
                                 style="background: #2c5d7c;">
@@ -76,7 +80,6 @@
                     </div>
                 </form>
 
-                <!-- Register Link -->
                 <div class="text-center mt-4">
                     <p class="text-muted mb-0">Don't have an account?</p>
                     <a href="{% url 'recommendox:register' %}"
@@ -87,7 +90,6 @@
 
             </div>
 
-            <!-- Footer -->
             <div class="card-footer text-center">
                 <small class="text-muted">
                     By logging in, you agree to our Terms of Service and Privacy Policy
@@ -97,5 +99,28 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordField = document.getElementById('id_password');
+    const toggleIcon = document.getElementById('toggleIcon');
+    
+    if (togglePassword && passwordField) {
+        togglePassword.addEventListener('click', function() {
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            
+            if (type === 'text') {
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        });
+    }
+});
+</script>
 
 {% endblock %}

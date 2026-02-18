@@ -1,4 +1,4 @@
-# recommendox/views.py - FIXED IMPORTS
+# recommendox/views.py
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import login, logout, authenticate
@@ -12,13 +12,14 @@ from django import forms
 from django.utils import timezone
 from datetime import timedelta
 from .models import (
-    Content, UserProfile, GoldenUser, Watchlist, 
-    Rating, Review, Analytics, Message, Reviewer, ContentOTT, ContentCreator
+    Content, UserProfile, Watchlist, 
+    Rating, Review, Reviewer, ContentOTT, ContentCreator
+    #GoldenUser,Analytics, Message
 )
-from .forms import UserRegistrationForm, ContentForm, ReviewForm
+from .forms import UserRegistrationForm, ContentForm #ReviewForm
 
 
-# ==================== HELPER FUNCTIONS & DECORATORS (MUST BE FIRST) ====================
+#HELPER FUNCTIONS 
 
 def is_reviewer(user):
     """Check if user has reviewer role"""
@@ -60,6 +61,7 @@ def content_creator_required(view_func):
 def get_personalized_recommendations(user):
     """Generate personalized recommendations based on user activity"""
     recommendations = []
+    seen_ids = set()  # Track content IDs to avoid duplicates
     
     # Get user's favorite genres from ratings
     user_ratings = Rating.objects.filter(user=user)
@@ -84,26 +86,32 @@ def get_personalized_recommendations(user):
                     id__in=user_ratings.values_list('content_id', flat=True)
                 ).order_by('-ratings__rating_value')[:3]
                 
-                recommendations.extend(list(genre_content))
+                for content in genre_content:
+                    if content.id not in seen_ids:  # Check for duplicates
+                        recommendations.append(content)
+                        seen_ids.add(content.id)
     
     # If not enough recommendations, add popular content
     if len(recommendations) < 6:
         additional = Content.objects.exclude(
-            id__in=[c.id for c in recommendations]
+            id__in=seen_ids  # Exclude already added
         ).order_by('-ratings__rating_value')[:6-len(recommendations)]
         
-        recommendations.extend(list(additional))
+        for content in additional:
+            if content.id not in seen_ids:
+                recommendations.append(content)
+                seen_ids.add(content.id)
     
     return recommendations[:6]  # Return max 6 recommendations
 
 
-# ==================== PUBLIC VIEWS ====================
+#PUBLIC VIEWS
 
 def home(request):
     """Public home page"""
     from django.db.models import Avg
     
-    # Trending content (highest rated)
+    # Trending content
     trending_content = Content.objects.annotate(
         average_rating=Avg('ratings__rating_value')
     ).order_by('-average_rating')[:8]
@@ -153,7 +161,7 @@ def content_list(request):
     sort_by = request.GET.get('sort', '-created_at')
     content_list = content_list.order_by(sort_by)
     
-    # Pagination
+    # Pagination (this is for dividing our content list in 12 different pages)
     paginator = Paginator(content_list, 12)
     page = request.GET.get('page')
     content = paginator.get_page(page)
@@ -250,28 +258,23 @@ def user_logout(request):
     return redirect('recommendox:home')
 
 
-# ==================== USER VIEWS ====================
+#USER VIEWS
 
 @login_required
 def user_dashboard(request):
     """User dashboard"""
     user = request.user
     profile, created = UserProfile.objects.get_or_create(user=user)
-    
     # Check if user is reviewer
     user_is_reviewer = is_reviewer(user)
-    
     # User's watchlist
     watchlist = Content.objects.filter(
         id__in=Watchlist.objects.filter(user=user).values_list('content_id', flat=True)
     )[:6]
-    
     # User's ratings
     user_ratings = Rating.objects.filter(user=user).order_by('-rating_date')[:5]
-    
     # User's reviews
     user_reviews = Review.objects.filter(user=user).order_by('-review_date')[:5]
-    
     # Personalized recommendations
     recommendations = get_personalized_recommendations(user)
     
@@ -342,14 +345,20 @@ def add_review(request, content_id):
                 user=request.user,
                 content=content,
                 comment=comment,
-                is_approved=user_is_reviewer,  # Auto-approve for reviewers
-                is_verified=user_is_reviewer   # Mark as verified for reviewers
+                is_approved=user_is_reviewer,
+                is_verified=user_is_reviewer
             )
             
+            # Count user's reviews for this content
+            review_count = Review.objects.filter(
+                user=request.user, 
+                content=content
+            ).count()
+            
             if user_is_reviewer:
-                messages.success(request, 'Your review has been posted!')
+                messages.success(request, f'Your review has been posted! (Review #{review_count})')
             else:
-                messages.success(request, 'Your review has been submitted for moderation.')
+                messages.success(request, f'Your review has been submitted for moderation. (Review #{review_count})')
     
     return redirect('recommendox:content_detail', content_id=content_id)
 
@@ -397,7 +406,7 @@ def delete_review(request, review_id):
     return render(request, 'recommendox/confirm_delete.html', {'review': review})
 
 
-# ==================== CONTENT CREATOR VIEWS ====================
+#CONTENT CREATOR VIEWS
 
 @content_creator_required
 def creator_dashboard(request):
@@ -410,12 +419,7 @@ def creator_dashboard(request):
         creator = user.profile.creator_profile
     except:
         pass
-    
-    # Get content added by this creator (if you track this)
-    # You might need to add a 'added_by' field to Content model
-    # For now, show all content
     recent_content = Content.objects.order_by('-created_at')[:10]
-    
     # Get statistics
     total_content = Content.objects.count()
     recent_count = Content.objects.filter(created_at__gte=timezone.now() - timedelta(days=7)).count()
@@ -443,7 +447,7 @@ def manage_content(request):
             url = request.POST.get('ott_url')
             is_free = request.POST.get('ott_free') == 'True'
             
-            if platform and url:  # Only save if both platform and URL are provided
+            if platform and url: 
                 ContentOTT.objects.create(
                     content=content,
                     platform_name=platform,
@@ -519,7 +523,7 @@ def delete_content(request, content_id):
     return redirect('recommendox:manage_content')
 
 
-# ==================== ADMIN VIEWS ====================
+#ADMIN VIEWS
 
 @staff_member_required
 def admin_dashboard(request):
@@ -691,7 +695,7 @@ def moderate_reviews(request):
     return render(request, 'recommendox/moderate_reviews.html', context)
 
 
-# ==================== OTT VIEWS ====================
+#OTT VIEWS
 
 def ott_browse(request):
     """Browse content by OTT platform"""

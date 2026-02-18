@@ -12,7 +12,6 @@
     </div>
 </div>
 
-<!-- Platform Filter -->
 <div class="card mb-4">
     <div class="card-body">
         <form method="GET" class="row g-3">
@@ -40,7 +39,6 @@
     </div>
 </div>
 
-<!-- Content Grid -->
 <div class="row">
     {% if page_obj %}
         {% for content in page_obj %}
@@ -57,7 +55,6 @@
                         </small>
                     </p>
                     
-                    <!-- Show OTT platforms for this content -->
                     {% for ott in content.ott_platforms.all|slice:":2" %}
                     <span class="badge bg-info">{{ ott.get_platform_name_display }}</span>
                     {% endfor %}
@@ -70,7 +67,6 @@
         </div>
         {% endfor %}
         
-        <!-- Pagination -->
         <div class="col-12">
             <nav>
                 <ul class="pagination justify-content-center">

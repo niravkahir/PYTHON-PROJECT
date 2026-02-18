@@ -5,7 +5,7 @@
 {% block title %}Manage Content - Admin{% endblock %}
 
 {% block content %}
-<!-- Add New Content Form -->
+
 <div class="card mb-4">
     <div class="card-header bg-primary text-white">
         <h5 class="mb-0"><i class="fas fa-plus-circle"></i> Add New Content</h5>
@@ -72,7 +72,6 @@
                         value="{{ form.release_date.value|date:'Y-m-d'|default:'' }}" required>
                 </div>
                 
-                <!-- ADD THIS MISSING DURATION FIELD -->
                 <div class="col-md-4 mb-3">
                     <label class="form-label" id="durationLabel">
                         {% if form.content_type.value == 'Web Series' %}
@@ -114,8 +113,6 @@
                 <textarea name="description" class="form-control" rows="4" required>{{ form.description.value|default:'' }}</textarea>
             </div>
             
-            <!-- Add this section in manage_content.html before the submit button - JUST ONE PLATFORM -->
-            <div class="card mb-3">
                 <div class="card-header bg-info text-white">
                     <h6 class="mb-0"><i class="fas fa-tv"></i> OTT Availability (Optional)</h6>
                 </div>
@@ -171,7 +168,6 @@
     </div>
 </div>
 
-<!-- Existing Content List -->
 <div class="card">
     <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
         <h5 class="mb-0"><i class="fas fa-list"></i> Existing Content ({{ content_list|length }})</h5>
@@ -247,7 +243,6 @@
     </div>
 </div>
 
-<!-- Delete Confirmation Modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -270,7 +265,6 @@
     </div>
 </div>
 
-<!-- Edit Modal -->
 <div class="modal fade" id="editModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -279,7 +273,6 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" id="editModalBody">
-                <!-- Edit form will be loaded here via AJAX -->
                 <div class="text-center py-4">
                     <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">Loading...</span>
@@ -293,7 +286,7 @@
 
 {% block extra_js %}
 <script>
-// Search functionality
+
 document.getElementById('searchContent').addEventListener('keyup', function() {
     const searchText = this.value.toLowerCase();
     const tableRows = document.querySelectorAll('#contentTable tbody tr');
@@ -311,7 +304,6 @@ document.getElementById('searchContent').addEventListener('keyup', function() {
     });
 });
 
-// Delete function
 function deleteContent(contentId, contentTitle) {
     document.getElementById('deleteTitle').textContent = contentTitle;
     document.getElementById('deleteForm').action = `/admin/manage-content/delete/${contentId}/`;
@@ -320,12 +312,10 @@ function deleteContent(contentId, contentTitle) {
     deleteModal.show();
 }
 
-// Edit function
 function editContent(contentId) {
     var editModal = new bootstrap.Modal(document.getElementById('editModal'));
     editModal.show();
     
-    // Load edit form via AJAX
     fetch(`/admin/manage-content/edit/${contentId}/`)
         .then(response => response.text())
         .then(html => {
@@ -340,7 +330,6 @@ function editContent(contentId) {
         });
 }
 
-// Handle URL parameters - maintain state on page reload
 window.addEventListener('load', function() {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('edited') === 'success') {
@@ -383,10 +372,9 @@ function updateDurationField() {
     }
 }
 
-// Initial call
 if (contentTypeSelect) {
     contentTypeSelect.addEventListener('change', updateDurationField);
-    updateDurationField(); // Set initial state based on current value
+    updateDurationField(); 
 }
 </script>
 {% endblock %}

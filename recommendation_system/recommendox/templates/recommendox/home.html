@@ -4,7 +4,6 @@
 {% block title %}Home - Movie Recommendation System{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
 <div class="hero-section text-center py-5 mb-5" style="background: linear-gradient(rgba(44, 62, 80, 0.9), rgba(52, 152, 219, 0.8)); color: white; border-radius: 10px;">
     <h1 class="display-4 fw-bold mb-3">Discover Your Next Favorite</h1>
     <p class="lead mb-4">Personalized movie and series recommendations based on your taste</p>
@@ -27,11 +26,10 @@
     </div>
 </div>
 
-<!-- Stats -->
+
 <div class="row mb-5">
 </div>
 
-<!-- Trending Now -->
 <h2 class="section-title">🔥 Trending Now</h2>
 <div class="row mb-5">
     {% for content in trending_content %}
@@ -72,7 +70,6 @@
     {% endfor %}
 </div>
 
-<!-- Recently Added -->
 <h2 class="section-title">🆕 Recently Added</h2>
 <div class="row mb-5">
     {% for content in recent_content %}
@@ -98,7 +95,6 @@
     {% endfor %}
 </div>
 
-<!-- Call to Action -->
 <div class="text-center py-5 mt-5" style="background: #f8f9fa; border-radius: 10px;">
     <h2 class="mb-3">Ready to Discover?</h2>
     <p class="lead mb-4">Join thousands of users who find their perfect movies and series</p>

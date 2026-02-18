@@ -17,7 +17,6 @@
     </div>
 </div>
 
-<!-- Search Bar -->
 <div class="card mb-4">
     <div class="card-body">
         <form method="GET" class="d-flex gap-2">
@@ -35,7 +34,6 @@
     </div>
 </div>
 
-<!-- Users Table -->
 <div class="card">
     <div class="card-header bg-dark text-white">
         <h5 class="mb-0"><i class="fas fa-list"></i> All Users ({{ users|length }})</h5>
@@ -91,7 +89,7 @@
                         </td>
                         <td>
                             <div class="btn-group btn-group-sm" style="gap: 5px; flex-wrap: wrap;">
-                                <!-- Make Reviewer Button -->
+
                                 {% if not u.is_reviewer and not u.is_creator and not u.is_superuser %}
                                 <form method="POST" action="{% url 'recommendox:make_reviewer' u.id %}" class="d-inline">
                                     {% csrf_token %}
@@ -101,7 +99,6 @@
                                 </form>
                                 {% endif %}
                                 
-                                <!-- Make Creator Button -->
                                 {% if not u.is_creator and not u.is_reviewer and not u.is_superuser %}
                                 <form method="POST" action="{% url 'recommendox:make_creator' u.id %}" class="d-inline">
                                     {% csrf_token %}
@@ -111,7 +108,7 @@
                                 </form>
                                 {% endif %}
                                 
-                                <!-- Block/Unblock Buttons -->
+                                
                                 {% if u.is_active and not u.is_superuser %}
                                 <form method="POST" class="d-inline" onsubmit="return confirm('Block this user?');">
                                     {% csrf_token %}
@@ -132,7 +129,7 @@
                                 </form>
                                 {% endif %}
                                 
-                                <!-- Delete Button -->
+                                
                                 {% if not u.is_superuser %}
                                 <form method="POST" class="d-inline" onsubmit="return confirm('Delete this user? This cannot be undone!');">
                                     {% csrf_token %}

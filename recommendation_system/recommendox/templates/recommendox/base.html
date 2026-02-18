@@ -40,7 +40,6 @@
             font-size: 1.5rem;
         }
         
-        /* Add active navigation styling */
         .navbar-nav .nav-link.active {
             font-weight: bold;
             background-color: rgba(255, 255, 255, 0.2);
@@ -140,7 +139,6 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
             <a class="navbar-brand" href="{% url 'recommendox:home' %}">
@@ -173,7 +171,7 @@
                     {% endif %}
 
                     {% if user.is_authenticated %}
-                    <!-- In base.html, add this to main nav -->
+                   
                     <li class="nav-item">
                         <a class="nav-link {% if '/ott/browse/' in request.path %}active{% endif %}" 
                         href="{% url 'recommendox:ott_browse' %}">
@@ -182,7 +180,6 @@
                     </li>
                     {% endif %}
 
-                    <!-- In base.html, add for content creators -->
                     {% if user.is_authenticated and user.profile.creator_profile or user.is_staff %}
                     <li class="nav-item">
                         <a class="nav-link {% if '/creator/' in request.path %}active{% endif %}" 
@@ -202,7 +199,6 @@
                     {% endif %}
                 </ul>
                 
-                <!-- Search Form -->
                 <form class="d-flex me-3" action="{% url 'recommendox:content_list' %}" method="GET">
                     <input class="form-control me-2" type="search" name="search" placeholder="Search movies/series...">
                     <button class="btn btn-outline-light" type="submit">
@@ -210,7 +206,6 @@
                     </button>
                 </form>
                 
-                <!-- User Auth -->
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}
                         <li class="nav-item dropdown">
@@ -248,7 +243,6 @@
         </div>
     </nav>
 
-    <!-- Messages/Notifications -->
     {% if messages %}
     <div class="container mt-3">
         {% for message in messages %}
@@ -260,12 +254,10 @@
     </div>
     {% endif %}
 
-    <!-- Main Content -->
     <main class="container">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container">   
             <div class="text-center">
@@ -279,14 +271,13 @@
     
     <!-- Custom JS -->
     <script>
-        // Simple rating system
+    
         document.addEventListener('DOMContentLoaded', function() {
-            // Rating stars interaction
+    
             const ratingStars = document.querySelectorAll('.rating-star');
             ratingStars.forEach(star => {
                 star.addEventListener('click', function() {
                     const rating = this.getAttribute('data-rating');
-                    // Submit rating via AJAX or form
                     console.log('Rating selected:', rating);
                 });
             });

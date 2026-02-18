@@ -4,7 +4,6 @@
 {% block title %}Dashboard - Movie Recommendation System{% endblock %}
 
 {% block content %}
-<!-- Dashboard Header -->
 <div class="row mb-4">
     <div class="col-md-8">
         <h1>Welcome, {{ user.username }}!</h1>
@@ -12,7 +11,6 @@
     </div>
 </div>
 
-<!-- User Stats -->
 <div class="row mb-5">
     <div class="col-md-3 col-sm-6 mb-3">
         <div class="stats-card text-center">
@@ -50,7 +48,6 @@
     </div>
 </div>
 
-<!-- Personalized Recommendations -->
 <h2 class="section-title">✨ Recommended For You</h2>
 <div class="row mb-5">
     {% if recommendations %}
@@ -91,7 +88,6 @@
     {% endif %}
 </div>
 
-<!-- Watchlist -->
 <div class="row">
     <div class="col-md-6 mb-4">
         <div class="card h-100">
@@ -131,7 +127,6 @@
         </div>
     </div>
     
-    <!-- Recent Ratings -->
     <div class="col-md-6 mb-4">
         <div class="card h-100">
             <div class="card-header">
@@ -175,7 +170,6 @@
     </div>
 </div>
 
-<!-- Quick Actions -->
 <div class="row mt-4">
     <div class="col-12">
         <div class="card">
